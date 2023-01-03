@@ -10,7 +10,7 @@ The QUOKKA workflow is a semi-automatic workflow for QUerying Ontological resour
 ## Frame Building Workflow
 
 
-![QUOKKA frame building general workflow](https://github.com/StenDoipanni/QUOKKA/quokka_general.png)
+![QUOKKA frame building general workflow](https://github.com/StenDoipanni/QUOKKA/blob/main/quokka_general.png)
 
 
 Following the above figure, starting from the upper left corner, we try to list here all the semantic relations that can be investigated about the possible relatedness of some entity and some domain.
