@@ -230,6 +230,7 @@ The SPARQL query is shown in Fig. ?? as “FrameNet Lexical Unit Query” and it
 Activation from lexical material is a substantial part of the semantic detection, and it is generated automatically re-injecting in the workflow the “Frame activation query” output results, namely the frames previously manually selected. The rationale is that, if some entity evokes a FrameNet frame, which in turn has some relation with the to-be-modeled frame, than that entity should have some form of activation to the frame itself too. Therefore, this query extends the lexical coverage from mere FrameNet lexical units to other well known semantic web resources via extracting all the elements that evoke a frame. In Framester semantics all the WordNet synsets are considered frames as well, namely, the class of situations for which a certain sense of a term is applicable: this allows an alignment from WordNet synsets, clustering lexical units with a certain sense, in turn evoking a certain frame, and the evoked frame itself. The synset (the class of situations for which a certain meaning stands) is subsumed by the frame (the class of situation satisfied by the occurrence of the frame), therefore, the SPARQL query aims at extending lexical coverage for all the senses of a certain set of terms, clustered for its context of use. Note that the amount of elements retrieved may be considerable (the broader is the to-be-modeled frame, the larger the set of triggers, possibly even thousands of WordNet synsets). Being used in many works for disambiguation, alignment and entity recognition tasks, synsets are a very important part of the knowledge base to provide a proper coverage to achieve a proper operationalisation of the frame. The WordNet version aligned in Framester is the 3.0, while the one available from the WordNet repository is the 3.1. This query could be found in the above Figure as “Frame Synsets Query”.
 
 
+
 WordNet synsets query:
 ```
 SELECT DISTINCT ?wnsyn ?framestersyn
@@ -238,6 +239,7 @@ WHERE { <Framester_frame> <https://w3id.org/framester/schema/subsumes> ?frameste
 <https://w3id.org/framester/schema/unaryProjection> ?wnsyn .
 }
 ```
+
 
 
 
