@@ -41,6 +41,97 @@ The semantic relations available are:
 These properties allow to exploit ConceptNet network of relations aligned to other well known semantic web and multi-modal resources, extending the SLM to a much broader triggering set.
 
 
+DerivedFrom query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/DerivedFrom> <conceptnet_entity> .
+}
+```
+
+Causes query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/Causes> <conceptnet_entity> .
+}
+```
+
+Antonym query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/Antonym> <conceptnet_entity> .
+}
+```
+
+isA query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/isA> <conceptnet_entity> .
+}
+```
+
+EtymologicallyRelatedTo query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/EtymologicalltRelatedTo> <conceptnet_entity> .
+}
+```
+
+SymbolOf query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/SymbolOf> <conceptnet_entity> .
+}
+```
+
+UsedFor query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/UsedFor> <conceptnet_entity> .
+}
+```
+
+HasSubevent query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/HasSubevent> <conceptnet_entity> .
+}
+```
+
+MotivatedByGoal query:
+
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/MotivatedByGoal> <conceptnet_entity> .
+}
+```
+
+EtimologicallyDerivedFrom query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/EtimologicallyDerivedFrom> <conceptnet_entity> .
+}
+```
+
+FormOf query:
+```
+SELECT DISTINCT ?concept
+WHERE {
+?concept <https://w3id.org/framester/conceptnet/5.7.0/r/FormOf> <conceptnet_entity> .
+}
+```
+
+
+
 
 ### WikiData lexical triggering
 
@@ -52,22 +143,76 @@ Directly depending on the gathering of concept entities from the ConcepNet-drive
 
 Parallel to the WikiData lexical triggering step, it is possible, starting from ConceptNet concepts, to retrieve entities aligned to the DBpedia resource, providing a factual grounding to the domain knowledge base. This query is shown in the above figure as “DBpedia External URL query”.
 
+Wikidata, DBpedia and Wiktionary query:
+```
+SELECT DISTINCT ?dbent
+WHERE {
+<conceptnet_concept> <https://w3id.org/framester/conceptnet/5.7.0/r/ExternalURL> ?dbent .
+}
+```
 
 ### Frame-driven triggering 
 
 
-On a separate branch, as shown in Fig. ??, after the SLM manual selection, in order not to re-invent the wheel, the lexical units are checked to be lexical triggers of already existing FrameNet frames. In fact, among the many existing frames some of them could have a partial overlap with the desired domain, while some of them could be sub/super sets. <br>
+On a separate branch, as shown in the figure above, after the SLM manual selection, in order not to re-invent the wheel, the lexical units are checked to be lexical triggers of already existing FrameNet frames. In fact, among the many existing frames some of them could have a partial overlap with the desired domain, while some of them could be sub/super sets. <br>
 This step is realised in the Framester resource using as variable the lexical unit, non disambiguated, and collecting all its senses and all the frames evoked by all the senses of some lexical material. <br>
 This query is represented in the above figure as the “Frames activation query” starting node. Depending on the lexical material used as input variable the amount of senses and related frames could vary from none to several frames. Further contextual disambiguation is therefore necessary, in order to improve the quality of data, and to separate the appropriate semantic sense from those not related to the domain. After performing the SPARQL query, the set of frames selected as possible triggers is therefore done manually, and after the iteration of the query for all synonyms and hyponyms, as mentioned in the Manual Lexical Units selection paragraph, the first step of the QUOKKA frame building workflow search can be declared closed, allowing to move to the following step.
+
+Framester frames query:
+```
+PREFIX fschema: <https://w3id.org/framester/schema/>
+SELECT DISTINCT ?frame
+WHERE {
+?frame rdf:type fschema:ConceptualFrame , owl:Class ;
+rdfs:subClassOf fschema:FrameOccurrence ;
+owl:sameAs ?fnframe .
+?fnframe skos:closeMatch ?syn ; a fn15schema:Frame .
+?syn wn30schema:senseLabel "input_variable"@en-us
+}
+```
+
+FrameNet frames query:
+```
+SELECT DISTINCT ?o
+WHERE {
+<Framester_frame> <http://www.w3.org/2002/07/owl#sameAs> ?o .
+}
+```
 
 
 
 ### Frame element-driven triggering
 
 
-
 Assuming that the domain to be modeled is broad enough, some parts of it could be already covered by existing frames, allowing therefore to inherit the structure of semantic roles already formalised. This step relates exactly to that eventuality: frame element activation concerns the activation of some semantic roles related to the occurrence of a ```dul:Situation```, therefore a Frame occurrence, for the domain in exam. The conceptual questions to be asked are therefore related to the structure of semantic relations involved in the domain, like “what are the necessary roles?”, or “is there an Agent / Patient?”, etc. The related SPARQL query focuses on retrieving FrameNet frame elements of type “Core”, “Extra-Thematic” and “Peripheral”, namely: those element ontologically necessary to the frame occurrence; those that specify some more or less crucial feature about both the situation or the roles involved, e.g. the degree of some action, the intensity, etc., and finally those roles which are almost always participating in frame occurrence, like time and space. In this work the semantic roles structure is inherited by both FrameNet frame elements as well as their alignments with the Framester resource. <br>
 The query is shown in the above figure as “Frame Element Type Query”.
+
+Core Frame Element query:
+```
+SELECT DISTINCT ?corefe
+WHERE {
+<FrameNet_frame> fn15schema:hasFrameElement ?corefe .
+?corefe <https://w3id.org/framester/framenet/tbox/FE_coreType> "Core"^^xsd:string .
+}
+```
+Extra-thematic Frame Element query:
+
+```
+SELECT DISTINCT ?etfe
+WHERE {
+<FrameNet_frame> fn15schema:hasFrameElement ?etfe .
+?etfe <https://w3id.org/framester/framenet/tbox/FE_coreType> "Extra-Thematic"^^xsd:string .
+}
+```
+
+Peripheral Frame Element query:
+```
+SELECT DISTINCT ?perife
+WHERE {
+<FrameNet_frame> fn15schema:hasFrameElement ?perife .
+?perife <https://w3id.org/framester/framenet/tbox/FE_coreType> "Peripheral"^^xsd:string .
+}
+```
 
 
 ### FrameNet Lexical Units triggering
@@ -83,6 +228,17 @@ The SPARQL query is shown in Fig. ?? as “FrameNet Lexical Unit Query” and it
 
 
 Activation from lexical material is a substantial part of the semantic detection, and it is generated automatically re-injecting in the workflow the “Frame activation query” output results, namely the frames previously manually selected. The rationale is that, if some entity evokes a FrameNet frame, which in turn has some relation with the to-be-modeled frame, than that entity should have some form of activation to the frame itself too. Therefore, this query extends the lexical coverage from mere FrameNet lexical units to other well known semantic web resources via extracting all the elements that evoke a frame. In Framester semantics all the WordNet synsets are considered frames as well, namely, the class of situations for which a certain sense of a term is applicable: this allows an alignment from WordNet synsets, clustering lexical units with a certain sense, in turn evoking a certain frame, and the evoked frame itself. The synset (the class of situations for which a certain meaning stands) is subsumed by the frame (the class of situation satisfied by the occurrence of the frame), therefore, the SPARQL query aims at extending lexical coverage for all the senses of a certain set of terms, clustered for its context of use. Note that the amount of elements retrieved may be considerable (the broader is the to-be-modeled frame, the larger the set of triggers, possibly even thousands of WordNet synsets). Being used in many works for disambiguation, alignment and entity recognition tasks, synsets are a very important part of the knowledge base to provide a proper coverage to achieve a proper operationalisation of the frame. The WordNet version aligned in Framester is the 3.0, while the one available from the WordNet repository is the 3.1. This query could be found in the above Figure as “Frame Synsets Query”.
+
+
+WordNet synsets query:
+```
+SELECT DISTINCT ?wnsyn ?framestersyn
+WHERE { <Framester_frame> <https://w3id.org/framester/schema/subsumes> ?framestersyn .
+?framestersyn a <https://w3id.org/framester/schema/WnSynsetFrame> ;
+<https://w3id.org/framester/schema/unaryProjection> ?wnsyn .
+}
+```
+
 
 
 ### Close Match triggering
@@ -104,13 +260,48 @@ Here we specify entities aligned with the skos:closeMatch relation from several 
 Entities from all the above mentioned resources can be retrieved via dedicated queries as well as via the skos:closeMatch query, shown in the above figure as blue oval labeled “Close-Match Query".
 
 
+skos:CloseMatch query:
+```
+SELECT DISTINCT ?ent
+WHERE {
+GRAPH ?g { ?g fschema:reliabilityScore ?score .
+FILTER( xsd:integer(?score) >= 4) }
+<FrameNet_frame> skos:closeMatch ?ent .
+}
+```
+
+Premon query:
+```
+SELECT DISTINCT ?premon
+WHERE {
+GRAPH ?g { ?g fschema:reliabilityScore ?score .
+FILTER( xsd:integer(?score) >= 4) }
+<FrameNet_frame> <http://www.w3.org/2002/07/owl#sameAs> ?premon .
+}
+```
+
+VerbNet verbs query:
+```
+SELECT DISTINCT ?vb
+WHERE {
+<WordNet_synset> <https://w3id.org/framester/wn/wn30/schema/containsWordSense> ?o .
+?o <https://w3id.org/framester/wn/wn30/schema/senseKey> ?o2 .
+?vb <https://w3id.org/framester/vn/schema/mapsToWordSenseKey> ?o2 .
+}
+```
 
 ### YAGO Ontology triggering
 
 
 Lexical grounding from WordNet is reused once again to retrieve entities from YAGO (Yet Another Great Ontology) resource. The aligned in this case is done via owl:sameAs property towards WordNet synsets. The query is shown in figure above as “YAGO Ontology query”.
 
-
+YAGO query:
+```
+SELECT DISTINCT ?ent
+WHERE {
+?ent <http://www.w3.org/2002/07/owl#sameAs> <WordNet_synset> .
+}
+```
 
 ### Semantic role-driven triggering
 
