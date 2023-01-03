@@ -312,6 +312,62 @@ Queries to retrieve these entities can be performed both starting from frames ma
 the to-be-modeled frame is evoked only by a certain role of an already existing frame (e.g. those frames that represent two plausible opposite outcomes of a certain situation), for this reason, a human in the loop is necessary for this step of the knowledge base population. Possible outcomes are shown in the figure above as the output of “Semantic Role query”.
 
 
+General Semantic Roles query:
+```
+SELECT DISTINCT ?argument ?fe ?gfe ?genRole ?genArg ?tropeRole ?semRole
+{ GRAPH ?g {
+{ ?argument a <https://w3id.org/framester/vn/schema/Argument>.
+FILTER(regex(?argument, "insert_variable", "i")) }
+UNION
+{ ?fe a <https://w3id.org/framester/framenet/tbox/FrameElement> .
+FILTER(regex(?fe, "insert_variable", "i")) }
+UNION
+{ ?gfe a <https://w3id.org/framester/framenet/tbox/GenericFE> .
+FILTER(regex(?gfe, "insert_variable", "i")) }
+UNION
+{?genRole a <https://w3id.org/framester/schema/GenericRole> .
+FILTER(regex(?genRole, "insert_variable", "i")) }
+UNION
+{ ?genArg a <https://w3id.org/framester/vn/schema/GenericArgument> .
+FILTER(regex(?genArg, "insert_variable", "i")) }
+UNION
+{ ?tropeRole a<https://w3id.org/framester/wn/wn30/wordnet-verbnountropes/TropeRole> .
+FILTER(regex(?tropeRole, "insert_variable", "i")) }
+UNION
+{ ?semRole a <https://w3id.org/framester/schema/semanticRole> .
+FILTER(regex(?semRole, "insert_variable", "i")) }
+} }
+```
+
+Specific Semantic Roles query:
+```
+SELECT DISTINCT ?x ?coreRole ?y ?arg ?z ?fe ?k ?role ?s ?necRole ?q ?optRole?r ?vnRole
+{ GRAPH ?g {
+{ ?x <https://w3id.org/framester/schema/coreRole> ?coreRole .
+FILTER(regex(?coreRole, "insert_variable", "i")) }
+UNION
+{ ?y <https://w3id.org/framester/vn/schema/hasArgument> ?arg .
+FILTER(regex(?arg, "insert_variable", "i")) }
+UNION
+{ ?z <https://w3id.org/framester/framenet/tbox/hasFrameElement> ?fe .
+FILTER(regex(?fe, "insert_variable", "i")) }
+UNION
+{ ?k <https://w3id.org/framester/pb/pbschema/hasRole> ?role .
+FILTER(regex(?role, "insert_variable", "i")) }
+UNION
+{ ?s <https://w3id.org/framester/schema/necessaryRole> ?necRole .
+FILTER(regex(?necRole, "insert_variable", "i")) }
+UNION
+{ ?q <https://w3id.org/framester/schema/optionalRole> ?optRole .
+FILTER(regex(?optRole, "insert_variable", "i")) }
+UNION
+{ ?r <https://w3id.org/framester/schema/vnRole> ?vnRole .
+FILTER(regex(?vnRole, "insert_variable", "i")) }
+} }
+```
+
+
+
 ### Semantic type-driven triggering
 
 
@@ -320,6 +376,16 @@ Albeit semantic types are more productive regarding physical dimensions (e.g. sp
 ```fnst:Goal```) it is an aspect that should generally be considered in the frame building workflow, while populating the knowledge graph operationalising the frame. <br>
 This step, therefore, consists in retrieving all existing FrameNet semantic types, and then manually explore their differences and coverage, resulting in a selection of semantic types eventually triggering the desired frame. Then, a second query is performed, looking for entities filtered by the aforementioned iteration of non-disambiguated lexical units from synsets and their hyponyms, also extracting their semantic type, ending in a final coherence checking between the entities retrieved, their semantic type, and their semantic type evocation of the frame. The queries are shown in Fig. ?? as “Semantic Type query”. <br>
 This final query in particular, which refers to Pustejovsky’s “Type theory” is particularly relevant and is exploited to infer further knowledge from graph pattern inferences related to *Type Matching*, *Type Accomodation*, and *Type Coercion*.
+
+
+Semantic Type query:
+```
+SELECT DISTINCT ?entity ?semanticType
+WHERE {
+?entity <https://w3id.org/framester/framenet/tbox/hasSemType> ?semanticType .
+FILTER(regex(?entity, "insert_variable", "i"))
+}
+```
 
 
 
