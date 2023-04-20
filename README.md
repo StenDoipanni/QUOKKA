@@ -6,8 +6,21 @@ QUerying Ontological resources and Knowledge bases for Knowledgment Augmentation
 The QUOKKA workflow is a semi-automatic workflow for QUerying Ontological resources and Knowledge bases for Knowledge Augmentation. It consists in a set of SPARQL queries to perform a query expansion with the purpose of building a semantic frame of some desired domain. The QUOKKA workflow aims at building frame structures populating knowledge graphs with Linked Open Data entities from well-known and high quality semantic web resources. This allows the creation of multi-purpose and multi-modal knowledge graphs with thousands of semantic web triggers for any desired domain.
 
 
+## QUOKKA as online service
 
-## Frame Building Workflow
+QUOKKA can be accessed as an online service [here](http://etna.istc.cnr.it/quokka/concepts) to extract knowledge from the Framester ontology hub. To do so, follow these simple steps: <br>
+1. Start selecting a few lexical units (words) to explore a certain domain (e.g. "music", "violin", "orchestra"). Replace each space with "_" (e.g. "ice cream" --> "ice_cream") <br>
+2. Write your selected word(s) without capital letters, one per line in the search box. You can give as input several lexical units, but keep in mind that for each given entry many SPARQL queries are performed, therefore giving more than 10 words at the same time could time out your call. <br>
+3. Check the boxes to select the desired entities to be retrieved. <br>
+4. Press "Extract" to execute. <br>
+
+Among the results, if you checked the "Framester frames" box, you will find the semantic frames evoked by your lexical unit. If you want to keep exploring Framester via further query expansion, you can select a bunch of interesting semantic frames. You can use them on the QUOKKA interface dedicated to knowledge extraction starting from Conceptual Frames, available [here](http://etna.istc.cnr.it/quokka/frames). <br>
+To do so, paste the frame URI in the box, check the boxes corresponding to the entities you desire to retrieve and press "Extract" to execute. <br>
+
+The rationale and motivation of each query is extensively described in the followings.
+
+
+## Conceptual Model and Queries Description
 
 
 ![QUOKKA frame building general workflow](https://github.com/StenDoipanni/QUOKKA/blob/main/quokka_general.png)
